@@ -86,29 +86,49 @@ def summarize_text(text, length="Medium"):
         return None
 
 def summarize_video(url, uploaded_file, length, status, progress_callback=None):
-    """Orchestrates the video summarization process for URL or uploaded file."""
+    """Orchestrates the video/audio summarization process."""
     video_file = None
+    audio_file = None
+    
     if url:
         status.update(label="Downloading video...")
         video_file = download_video(url, progress_callback=progress_callback)
         if not video_file:
             status.update(label="Video download failed!", state="error")
             return None, None
-    elif uploaded_file:
-        status.update(label="Processing uploaded video...")
-        video_file = "uploaded_video.mp4"
-        with open(video_file, "wb") as f:
-            f.write(uploaded_file.read())
-        if not os.path.exists(video_file):
-            status.update(label="Video upload failed!", state="error")
+        
+        status.update(label="Extracting audio...")
+        audio_file = extract_audio(video_file)
+        if not audio_file:
+            status.update(label="Audio extraction failed!", state="error")
+            cleanup_files(video_file)
             return None, None
     
-    status.update(label="Extracting audio...")
-    audio_file = extract_audio(video_file)
-    if not audio_file:
-        status.update(label="Audio extraction failed!", state="error")
-        cleanup_files(video_file)
-        return None, None
+    elif uploaded_file:
+        file_ext = uploaded_file.name.split('.')[-1].lower()
+        if file_ext == "mp3":
+            status.update(label="Processing uploaded audio...")
+            audio_file = "uploaded_audio.mp3"
+            with open(audio_file, "wb") as f:
+                f.write(uploaded_file.read())
+            if not os.path.exists(audio_file):
+                status.update(label="Audio upload failed!", state="error")
+                return None, None
+        else:  # Video file (mp4, avi, mov, mkv)
+            status.update(label="Processing uploaded video...")
+            video_file = f"uploaded_video.{file_ext}"
+            with open(video_file, "wb") as f:
+                f.write(uploaded_file.read())
+            if not os.path.exists(video_file):
+                status.update(label="Video upload failed!", state="error")
+                return None, None
+            
+            status.update(label="Extracting audio...")
+            audio_file = extract_audio(video_file)
+            if not audio_file:
+                status.update(label="Audio extraction failed!", state="error")
+                cleanup_files(video_file)
+                return None, None
     
     status.update(label="Transcribing audio...")
     transcript = transcribe_audio(audio_file)

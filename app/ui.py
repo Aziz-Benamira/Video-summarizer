@@ -12,7 +12,7 @@ def render_ui(summarize_callback):
     st.markdown('<div class="header"><h1>🎥 YouTube Video Summarizer</h1><p>Extract and summarize video content effortlessly</p></div>', unsafe_allow_html=True)
     
     url = st.text_input("YouTube URL", placeholder="e.g., https://www.youtube.com/watch?v=Q4xCR20Dh1E")
-    uploaded_file = st.file_uploader("Or upload a video file", type=["mp4", "avi", "mov", "mkv"], accept_multiple_files=False)
+    uploaded_file = st.file_uploader("Or upload a video/audio file", type=["mp4", "avi", "mov", "mkv", "mp3"], accept_multiple_files=False)
     
     st.write("Select Summary Length:")
     col1, col2, col3 = st.columns(3)
@@ -27,11 +27,10 @@ def render_ui(summarize_callback):
     
     if st.button("Summarize Video"):
         if not url and not uploaded_file:
-            st.warning("Please enter a YouTube URL or upload a video file.")
+            st.warning("Please enter a YouTube URL or upload a video/audio file.")
             return
         
         with st.status("Processing your video...", expanded=True) as status:
-            # Progress callback only for URL downloads
             progress_callback = None
             if url:
                 progress_bar = st.progress(0, text="Download Progress: 0%")
@@ -53,4 +52,4 @@ def render_ui(summarize_callback):
             st.markdown(f'<div class="summary-box">{summary}</div>', unsafe_allow_html=True)
     
     st.markdown("---")
-    st.markdown("Built with ❤️ using Streamlit, Whisper, and Gemini")
+    st.markdown("Built By Aziz Ben Amira, using Streamlit, Whisper, and Gemini")
