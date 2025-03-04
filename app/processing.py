@@ -5,7 +5,7 @@ import google.generativeai as genai
 import os
 from app.utils import cleanup_files
 
-genai.configure(api_key="YOUR_Gemini_API_KEY")  
+genai.configure(api_key="AIzaSyBKGU1rzjp1FQLQozc8eQDGl6W2R8gdBgI")  
 
 def download_video(url, output_path="video.mp4", progress_callback=None):
     def progress_hook(d):
