@@ -1,2 +1,2 @@
 ffmpeg
-python-dotenv
+dotenv
