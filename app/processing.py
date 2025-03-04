@@ -3,6 +3,7 @@ import ffmpeg
 import whisper
 import google.generativeai as genai
 import os
+import uuid
 from app.utils import cleanup_files
 
 genai.configure(api_key="AIzaSyBKGU1rzjp1FQLQozc8eQDGl6W2R8gdBgI")  
