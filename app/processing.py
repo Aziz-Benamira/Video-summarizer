@@ -5,8 +5,13 @@ import google.generativeai as genai
 import os
 import uuid
 from app.utils import cleanup_files
+from dotenv import load_dotenv
 
-genai.configure(api_key="AIzaSyBKGU1rzjp1FQLQozc8eQDGl6W2R8gdBgI")  
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure Gemini API with the loaded API key
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def download_video(url, output_path="video.mp4", progress_callback=None):
     def progress_hook(d):
